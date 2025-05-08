@@ -30,12 +30,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.6
+  http: ^1.4.0
   flutter_dotenv: ^5.0.2
   excel: ^2.0.4
   file_saver: ^0.2.8
   universal_html: ^2.0.8
   shared_preferences: ^2.2.2
+  flutter_animate: ^4.2.0
+  google_fonts: ^4.0.4
+  parallax_animation: ^0.0.3
 
   # Optional for better state/UI management
   provider: ^6.1.2
@@ -64,6 +67,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/bg_home.jpg
+    - assets/bg_create.jpg
+    - assets/bg_saved.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

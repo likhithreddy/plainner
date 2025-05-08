@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../app.dart'; // for themeModeNotifier
 import '../models/plan.dart';
 import '../services/excel_service.dart';
 import '../services/storage_service.dart';
@@ -69,53 +71,98 @@ class _SavedPlansScreenState extends State<SavedPlansScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Saved Plans')),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600),
-          child: savedPlans.isEmpty
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.insert_drive_file, size: 60, color: Colors.grey),
-                    SizedBox(height: 10),
-                    Text("No saved plans yet."),
-                  ],
-                )
-              : ListView.builder(
-                  itemCount: savedPlans.length,
-                  itemBuilder: (context, index) {
-                    final name = savedPlans.keys.elementAt(index);
-                    final entries = savedPlans[name]!;
-                    return Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 12),
-                      child: ListTile(
-                        title: Text(name,
-                            style:
-                                const TextStyle(fontWeight: FontWeight.w500)),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              tooltip: "View",
-                              icon: const Icon(Icons.visibility),
-                              onPressed: () => _viewPlan(name, entries),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text('Saved Plans'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(isDark ? Icons.wb_sunny : Icons.nightlight_round),
+            tooltip: isDark ? "Switch to Light Mode" : "Switch to Dark Mode",
+            onPressed: () {
+              themeModeNotifier.value =
+                  isDark ? ThemeMode.light : ThemeMode.dark;
+            },
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/bg_saved.jpg',
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+            ),
+          ),
+          Positioned.fill(
+            child: Container(color: Colors.black.withOpacity(0.4)),
+          ),
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: savedPlans.isEmpty
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.insert_drive_file,
+                            size: 60, color: Colors.white70),
+                        SizedBox(height: 10),
+                        Text("No saved plans yet.",
+                            style: TextStyle(color: Colors.white)),
+                      ],
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 40),
+                      itemCount: savedPlans.length,
+                      itemBuilder: (context, index) {
+                        final name = savedPlans.keys.elementAt(index);
+                        final entries = savedPlans[name]!;
+                        return Card(
+                          elevation: 5,
+                          color: Colors.white.withOpacity(0.95),
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              name,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
                             ),
-                            IconButton(
-                              tooltip: "Download",
-                              icon: const Icon(Icons.download),
-                              onPressed: () =>
-                                  ExcelService.savePlanAsExcel(name, entries),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  tooltip: "View",
+                                  icon: const Icon(Icons.visibility),
+                                  onPressed: () => _viewPlan(name, entries),
+                                ),
+                                IconButton(
+                                  tooltip: "Download",
+                                  icon: const Icon(Icons.download),
+                                  onPressed: () => ExcelService.savePlanAsExcel(
+                                      name, entries),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-        ),
+                          ),
+                        ).animate().fade().slideY(
+                              begin: 0.1,
+                              duration: 500.ms,
+                              delay: (index * 100).ms,
+                            );
+                      },
+                    ),
+            ),
+          ),
+        ],
       ),
     );
   }
