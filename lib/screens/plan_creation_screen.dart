@@ -77,6 +77,9 @@ class _PlanCreationScreenState extends State<PlanCreationScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final boxColor = isDark
+        ? Colors.grey[850]?.withOpacity(0.8)
+        : Colors.white.withOpacity(0.9);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -139,28 +142,26 @@ class _PlanCreationScreenState extends State<PlanCreationScreen> {
                       ),
                     const SizedBox(height: 10),
                     if (_planEntries.isNotEmpty)
-                      ..._planEntries
-                          .map(
-                            (entry) => AnimatedContainer(
-                              duration: 500.ms,
-                              curve: Curves.easeInOut,
-                              margin: const EdgeInsets.symmetric(vertical: 8),
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.9),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: ListTile(
-                                title: Text(
-                                  "${entry.date.toLocal().toString().split(' ')[0]} - ${entry.title}",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Text(entry.description),
-                              ),
+                      ..._planEntries.map(
+                        (entry) => AnimatedContainer(
+                          duration: 500.ms,
+                          curve: Curves.easeInOut,
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: boxColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              "${entry.date.toLocal().toString().split(' ')[0]} - ${entry.title}",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
-                          )
-                          .toList(),
+                            subtitle: Text(entry.description),
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 20),
                     if (_planEntries.isNotEmpty)
                       Row(

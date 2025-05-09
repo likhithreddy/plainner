@@ -72,6 +72,9 @@ class _SavedPlansScreenState extends State<SavedPlansScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final boxColor = isDark
+        ? Colors.grey[850]?.withOpacity(0.8)
+        : Colors.white.withOpacity(0.95);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -125,7 +128,7 @@ class _SavedPlansScreenState extends State<SavedPlansScreen> {
                         final entries = savedPlans[name]!;
                         return Card(
                           elevation: 5,
-                          color: Colors.white.withOpacity(0.95),
+                          color: boxColor,
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
